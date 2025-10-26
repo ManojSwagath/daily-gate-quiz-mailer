@@ -33,11 +33,13 @@ def generate_test_question(subject, topic):
 Subject: {subject}
 Topic: {topic}
 
-Use CONCISE language with ACTUAL numbers and formulas!
-Use simple ASCII: x^2, lambda, sigma, <=, >=, sqrt()
+Use MATHEMATICAL SYMBOLS (Unicode)!
+- Powers: x², x³, e⁻ᶻ (superscripts: ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻)
+- Greek: λ σ μ θ α β π Σ
+- Operators: ≤ ≥ × ÷ √ ∈ ∞
 
 Example:
-Q. For X ~ N(mu=100, sigma^2=400), find P(90 < X < 110).
+Q. For X ~ N(μ=100, σ²=400), find P(90 < X < 110).
 
 (A) 0.383
 (B) 0.683
@@ -46,12 +48,12 @@ Q. For X ~ N(mu=100, sigma^2=400), find P(90 < X < 110).
 
 Answer: (B)
 
-NOW GENERATE (short question with real math):"""
+NOW GENERATE (with SYMBOLS not text):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": "You are a GATE exam creator. Write SHORT, PRECISE questions with real numbers and formulas using simple ASCII: x^2, lambda, sigma, sqrt(), <=, >=. NO Unicode symbols. Keep it concise like actual GATE papers."},
+            {"role": "system", "content": "You are a GATE exam creator. Write questions with MATHEMATICAL SYMBOLS: x², λ, σ, √, ≤, ≥, μ, π, ∈, ∞, α, β. Use Unicode symbols NOT text. Keep concise."},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": 500,
@@ -87,14 +89,27 @@ for subject, topic in test_subjects:
     print("="*70)
     print()
 
-# Create PDF using ReportLab
+# Create PDF using ReportLab with Unicode support
 print("\n📄 Creating test PDF...")
+
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+# Try to register DejaVu font for Unicode support
+try:
+    pdfmetrics.registerFont(TTFont('DejaVu', 'DejaVuSans.ttf'))
+    pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'DejaVuSans-Bold.ttf'))
+    font_family = 'DejaVu'
+    print("✅ Using DejaVu font (Unicode support)")
+except Exception:
+    font_family = 'Helvetica'
+    print("⚠️ Using Helvetica (limited Unicode)")
 
 c = canvas.Canvas("test_quiz_readable.pdf", pagesize=A4)
 width, height = A4
 
 # Title
-c.setFont("Helvetica-Bold", 16)
+c.setFont(f"{font_family}-Bold" if font_family == 'DejaVu' else "Helvetica-Bold", 16)
 c.drawString(200, height - 60, "GATE DA Test Quiz - Readability Check")
 
 y = height - 100
@@ -103,6 +118,19 @@ for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
     # Check if we need a new page
     if y < 150:
         c.showPage()
+        c.setFont(font_family, 12)
+        y = height - 60
+    
+    # Question header
+    c.setFont(f"{font_family}-Bold" if font_family == 'DejaVu' else "Helvetica-Bold", 11)
+    c.setFillColorRGB(0, 0, 0.6)
+    header = f"{i}. {subject} - {topic}"
+    c.drawString(60, y, header)
+    y -= 20
+    
+    # Question text
+    c.setFont(font_family, 10)
+    c.setFillColorRGB(0, 0, 0)
         c.setFont("Helvetica", 12)
         y = height - 60
     
@@ -125,10 +153,13 @@ for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
             for wline in wrapped_lines:
                 if y < 100:
                     c.showPage()
-                    c.setFont("Helvetica", 10)
+                    c.setFont(font_family, 10)
                     y = height - 60
                 
-                c.drawString(60, y, wline)
+                try:
+                    c.drawString(60, y, wline)
+                except:
+                    c.drawString(60, y, wline.encode('ascii', 'replace').decode('ascii'))
                 y -= 15
     
     y -= 10

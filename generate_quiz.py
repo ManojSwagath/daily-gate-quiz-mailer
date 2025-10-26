@@ -75,20 +75,20 @@ Topic: {topic}
 
 FORMATTING RULES:
 1. Write PROPER GATE exam questions with actual formulas and numbers
-2. Use SIMPLE ASCII math notation:
-   - Powers: x^2, x^3, e^(-z)
-   - Fractions: 1/2, (a+b)/c
-   - Multiplication: * or just write "2x"
-   - Division: / or ÷
-   - Greek letters: spell them out (lambda, sigma, theta, alpha, beta, mu)
-   - Comparisons: <=, >=, !=, ~=
-   - Special: sqrt(), sum(), infinity
+2. Use MATHEMATICAL SYMBOLS (Unicode):
+   - Powers: x², x³, e⁻ᶻ (use superscripts: ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻)
+   - Roots: √, ∛, ∜
+   - Greek: α β γ δ θ λ μ σ π ω Σ Π Δ Ω
+   - Operators: × ÷ ± ∓ ≠ ≈ ≤ ≥ ∞
+   - Sets: ∈ ∉ ⊂ ⊆ ∪ ∩ ∅
+   - Logic: ∀ ∃ ∧ ∨ ¬
+   - Fractions: Use / or write as "a/b"
 3. Include NUMERICAL calculations and formulas
 4. Keep questions CONCISE but clear (like real GATE papers)
 5. GATE DA 2026 difficulty level
 
 Format:
-Q. [Question with actual numbers and formulas]
+Q. [Question with actual numbers and formulas using symbols]
 
 (A) [Option with numbers]
 (B) [Option with numbers]
@@ -110,7 +110,7 @@ Q. A medical test has sensitivity 0.95 and specificity 0.98. If disease prevalen
 Answer: (A)
 
 Example 2 (Linear Algebra):
-Q. Matrix A = [[2,1],[1,2]] has eigenvalues lambda_1 and lambda_2. What is det(A - 3I)?
+Q. Matrix A = [[2,1],[1,2]] has eigenvalues λ₁ and λ₂. What is det(A - 3I)?
 
 (A) -5
 (B) 0
@@ -120,7 +120,7 @@ Q. Matrix A = [[2,1],[1,2]] has eigenvalues lambda_1 and lambda_2. What is det(A
 Answer: (B)
 
 Example 3 (Statistics):
-Q. For X ~ N(mu=50, sigma^2=25), what is P(45 <= X <= 55)?
+Q. For X ~ N(μ=50, σ²=25), what is P(45 ≤ X ≤ 55)?
 
 (A) 0.68
 (B) 0.95
@@ -130,7 +130,7 @@ Q. For X ~ N(mu=50, sigma^2=25), what is P(45 <= X <= 55)?
 Answer: (A)
 
 Example 4 (ML):
-Q. Logistic regression uses sigmoid sigma(z) = 1/(1 + e^(-z)). If z = 3, find sigma(z) given e^(-3) = 0.05.
+Q. Logistic regression uses sigmoid σ(z) = 1/(1 + e⁻ᶻ). If z = 3, find σ(z) given e⁻³ = 0.05.
 
 (A) 0.90
 (B) 0.95
@@ -139,17 +139,14 @@ Q. Logistic regression uses sigmoid sigma(z) = 1/(1 + e^(-z)). If z = 3, find si
 
 Answer: (B)
 
-BAD Example (Too wordy):
-Q. In a medical diagnosis scenario where a patient is suspected to have a certain disease and the probability...
-
-NOW GENERATE (concise GATE question with real numbers):"""
+NOW GENERATE (concise GATE question with real mathematical symbols):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",  # Latest, fastest, FREE!
         "messages": [
             {
                 "role": "system",
-                "content": "You are a GATE DA exam question creator. Write CONCISE questions with actual numbers and formulas. Use simple ASCII notation: x^2, lambda, sigma, sqrt(), <=, >=. Keep questions short and precise like real GATE papers."
+                "content": "You are a GATE DA exam question creator. Write CONCISE questions with actual numbers and formulas. Use MATHEMATICAL SYMBOLS: x², λ, σ, √, ≤, ≥, ∈, ∞, α, β, θ, μ, π, Σ. Keep questions short and precise like real GATE papers."
             },
             {
                 "role": "user",
@@ -203,21 +200,34 @@ Answer: (D)
 # ============================================================================
 
 def create_pdf(questions, filename='quiz.pdf'):
-    """Create PDF using ReportLab - efficient and robust"""
+    """Create PDF using ReportLab with Unicode support"""
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    
+    # Register DejaVu fonts (supports Unicode math symbols)
+    try:
+        pdfmetrics.registerFont(TTFont('DejaVu', 'DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'DejaVuSans-Bold.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVu-Italic', 'DejaVuSans-Oblique.ttf'))
+        font_family = 'DejaVu'
+    except:
+        # Fallback to Helvetica if DejaVu not available
+        font_family = 'Helvetica'
+    
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
     
     # Title
-    c.setFont("Helvetica-Bold", 16)
+    c.setFont(f"{font_family}-Bold" if font_family == 'DejaVu' else "Helvetica-Bold", 16)
     c.drawString(200, height - 60, "GATE DA Daily Practice Quiz")
     
     # Date
-    c.setFont("Helvetica", 10)
+    c.setFont(font_family, 10)
     date_str = datetime.now().strftime("%B %d, %Y")
     c.drawString(250, height - 80, date_str)
     
     # Motivational text
-    c.setFont("Helvetica-Oblique", 11)
+    c.setFont(f"{font_family}-Italic" if font_family == 'DejaVu' else "Helvetica-Oblique", 11)
     c.setFillColorRGB(0.4, 0.4, 0.4)
     c.drawCentredString(width/2, height - 100, "Solve all questions before checking answers at the bottom!")
     
@@ -228,18 +238,18 @@ def create_pdf(questions, filename='quiz.pdf'):
         # Check if we need a new page
         if y < 150:
             c.showPage()
-            c.setFont("Helvetica", 12)
+            c.setFont(font_family, 12)
             y = height - 60
         
         # Question header
-        c.setFont("Helvetica-Bold", 13)
+        c.setFont(f"{font_family}-Bold" if font_family == 'DejaVu' else "Helvetica-Bold", 13)
         c.setFillColorRGB(0.2, 0.2, 0.6)
         header = f"{i}. {subject} - {topic}"
         c.drawString(60, y, header)
         y -= 20
         
         # Question text
-        c.setFont("Helvetica", 10)
+        c.setFont(font_family, 10)
         c.setFillColorRGB(0, 0, 0)
         
         lines = question.split('\n')
@@ -250,10 +260,14 @@ def create_pdf(questions, filename='quiz.pdf'):
                 for wline in wrapped_lines:
                     if y < 100:
                         c.showPage()
-                        c.setFont("Helvetica", 10)
+                        c.setFont(font_family, 10)
                         y = height - 60
                     
-                    c.drawString(60, y, wline)
+                    try:
+                        c.drawString(60, y, wline)
+                    except:
+                        # Fallback if Unicode fails
+                        c.drawString(60, y, wline.encode('ascii', 'replace').decode('ascii'))
                     y -= 15
         
         y -= 10
@@ -269,18 +283,18 @@ def create_pdf(questions, filename='quiz.pdf'):
     y -= 20
     
     # Answers section
-    c.setFont("Helvetica-Bold", 14)
+    c.setFont(f"{font_family}-Bold" if font_family == 'DejaVu' else "Helvetica-Bold", 14)
     c.setFillColorRGB(0.8, 0.2, 0.2)
     c.drawCentredString(width/2, y, "ANSWERS (Check after solving!)")
     y -= 25
     
-    c.setFont("Helvetica", 10)
+    c.setFont(font_family, 10)
     c.setFillColorRGB(0, 0, 0)
     
     for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
         if y < 100:
             c.showPage()
-            c.setFont("Helvetica", 10)
+            c.setFont(font_family, 10)
             y = height - 60
         
         # Extract answer
@@ -290,7 +304,10 @@ def create_pdf(questions, filename='quiz.pdf'):
                 answer_line = line.strip()
                 break
         
-        c.drawString(60, y, f"{i}. {subject}: {answer_line}")
+        try:
+            c.drawString(60, y, f"{i}. {subject}: {answer_line}")
+        except:
+            c.drawString(60, y, f"{i}. {subject}: {answer_line}".encode('ascii', 'replace').decode('ascii'))
         y -= 18
     
     c.save()
