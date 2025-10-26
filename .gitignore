@@ -1,0 +1,29 @@
+# Ignore environment variables file
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# PDF files (generated quizzes)
+*.pdf
+
+# Progress tracking (will be committed by GitHub Actions)
+# progress.json
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

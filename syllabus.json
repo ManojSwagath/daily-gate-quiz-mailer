@@ -1,0 +1,103 @@
+{
+  "Algorithms & Analysis": [
+    "Asymptotic Notations (Big O, Theta, Omega)",
+    "Recurrence Relations & Master Theorem",
+    "Sorting (Quick, Merge, Heap)",
+    "Searching (Binary Search, Hashing)",
+    "Divide and Conquer",
+    "Dynamic Programming (0/1 Knapsack, LCS, Matrix Chain)",
+    "Greedy Algorithms (Activity Selection, Huffman Coding)",
+    "Graph Algorithms (BFS, DFS, Dijkstra, Bellman-Ford)",
+    "Minimum Spanning Tree (Kruskal, Prim)",
+    "NP-Completeness & Reducibility"
+  ],
+  "Data Structures": [
+    "Arrays & Linked Lists Operations",
+    "Stacks & Queues (Applications)",
+    "Trees (Binary, BST, AVL, B-Trees)",
+    "Heaps & Priority Queues",
+    "Hashing (Open Addressing, Chaining)",
+    "Graphs (Adjacency Matrix, List)",
+    "Trie and Advanced Trees"
+  ],
+  "Operating Systems": [
+    "Process Scheduling (FCFS, SJF, Round Robin, Priority)",
+    "Process Synchronization (Semaphores, Monitors)",
+    "Deadlock (Detection, Prevention, Avoidance)",
+    "Memory Management (Paging, Segmentation)",
+    "Page Replacement Algorithms (FIFO, LRU, Optimal)",
+    "Virtual Memory & Thrashing",
+    "File System (Allocation Methods, Directory Structure)",
+    "Disk Scheduling (SCAN, C-SCAN, LOOK)"
+  ],
+  "Database Management Systems": [
+    "ER Model & Schema Design",
+    "Relational Algebra & Calculus",
+    "SQL Queries (Joins, Nested Queries, Aggregation)",
+    "Functional Dependencies & Normalization (1NF to BCNF)",
+    "Transactions & ACID Properties",
+    "Concurrency Control (2PL, Timestamp Ordering)",
+    "Serializability & Deadlock in Transactions",
+    "Indexing (B+ Trees, Hashing)",
+    "File Organization (Sequential, Indexed, Hashed)"
+  ],
+  "Computer Networks": [
+    "OSI & TCP/IP Reference Models",
+    "Data Link Layer (Framing, Error Detection, Flow Control)",
+    "MAC Protocols (CSMA/CD, Token Ring)",
+    "Network Layer (IP Addressing, Subnetting, CIDR)",
+    "Routing Algorithms (Distance Vector, Link State)",
+    "Transport Layer (TCP, UDP, Flow Control)",
+    "Congestion Control Algorithms",
+    "Application Layer (HTTP, DNS, FTP, SMTP)",
+    "Network Security (Encryption, Authentication)"
+  ],
+  "Digital Logic & Computer Architecture": [
+    "Boolean Algebra & K-Maps",
+    "Combinational Circuits (Adders, Multiplexers, Decoders)",
+    "Sequential Circuits (Flip-Flops, Counters, Registers)",
+    "CPU Organization (Datapath, Control Unit)",
+    "Instruction Set Architecture (RISC vs CISC)",
+    "Pipelining & Hazards",
+    "Memory Hierarchy (Cache, Main Memory)",
+    "Cache Mapping (Direct, Associative, Set-Associative)",
+    "I/O Organization & DMA"
+  ],
+  "Theory of Computation": [
+    "Finite Automata (DFA, NFA, NFA-ε)",
+    "Regular Expressions & Languages",
+    "Context-Free Grammars (CFG)",
+    "Pushdown Automata (PDA)",
+    "Turing Machines & Computability",
+    "Decidability & Undecidability",
+    "P, NP, NP-Complete, NP-Hard Problems"
+  ],
+  "Compiler Design": [
+    "Lexical Analysis (Tokens, Regular Expressions)",
+    "Syntax Analysis (Parsing - Top-Down, Bottom-Up)",
+    "LL(1) and LR Parsers",
+    "Syntax Directed Translation",
+    "Intermediate Code Generation",
+    "Code Optimization Techniques",
+    "Runtime Environments & Symbol Tables"
+  ],
+  "Discrete Mathematics": [
+    "Sets, Relations & Functions",
+    "Propositional & Predicate Logic",
+    "Graph Theory (Trees, Paths, Connectivity)",
+    "Combinatorics (Permutations, Combinations)",
+    "Counting Principles (Pigeonhole, Inclusion-Exclusion)",
+    "Probability (Conditional, Bayes Theorem)",
+    "Recurrence Relations",
+    "Group Theory Basics"
+  ],
+  "Programming & Data Structures": [
+    "Arrays & Strings Manipulation",
+    "Recursion & Backtracking",
+    "Linked List Operations",
+    "Stack & Queue Applications",
+    "Tree Traversals (Inorder, Preorder, Postorder)",
+    "Graph Traversals & Shortest Paths",
+    "Complexity Analysis of Programs"
+  ]
+}
