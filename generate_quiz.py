@@ -164,11 +164,11 @@ class QuizPDF(FPDF):
     
     def header(self):
         """PDF Header with title and date"""
-        self.set_font('Helvetica', 'B', 18)
+        self.set_font('helvetica', 'B', 18)
         self.set_text_color(255, 107, 53)  # Orange color
         self.cell(0, 10, 'Daily DA 2026 Quiz', 0, 1, 'C')
         
-        self.set_font('Helvetica', '', 12)
+        self.set_font('helvetica', '', 12)
         self.set_text_color(0, 0, 0)
         self.cell(0, 8, datetime.now().strftime('%B %d, %Y'), 0, 1, 'C')
         self.ln(5)
@@ -176,7 +176,7 @@ class QuizPDF(FPDF):
     def footer(self):
         """PDF Footer"""
         self.set_y(-15)
-        self.set_font('Helvetica', 'I', 8)
+        self.set_font('helvetica', 'I', 8)
         self.set_text_color(128, 128, 128)
         self.cell(0, 10, 'Generated with AI - Good luck!', 0, 0, 'C')
 
@@ -190,65 +190,84 @@ def create_pdf(questions):
     Returns:
         Filename of generated PDF
     """
-    pdf = QuizPDF()
-    pdf.add_page()
-    
-    # Add motivational header
-    pdf.set_font('Helvetica', 'I', 11)
-    pdf.set_text_color(100, 100, 100)
-    pdf.multi_cell(0, 6, 'Solve all questions before checking answers at the bottom!', 0, 'C')
-    pdf.ln(8)
-    
-    # Add questions
-    for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
-        # Subject header
-        pdf.set_font('Helvetica', 'B', 13)
-        pdf.set_text_color(50, 50, 150)
-        pdf.cell(0, 8, f"{i}. {subject} - {topic}", 0, 1)
+    try:
+        pdf = QuizPDF()
+        pdf.add_page()
         
-        # Question text
-        pdf.set_font('Helvetica', '', 10)
+        # Add motivational header
+        pdf.set_font('helvetica', 'I', 11)
+        pdf.set_text_color(100, 100, 100)
+        pdf.multi_cell(0, 6, 'Solve all questions before checking answers at the bottom!', 0, 'C')
+        pdf.ln(8)
+        
+        # Add questions
+        for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
+            # Subject header
+            pdf.set_font('helvetica', 'B', 13)
+            pdf.set_text_color(50, 50, 150)
+            pdf.cell(0, 8, f"{i}. {subject} - {topic}", 0, 1)
+            
+            # Question text
+            pdf.set_font('helvetica', '', 10)
+            pdf.set_text_color(0, 0, 0)
+            
+            # Clean question text - remove problematic Unicode characters
+            question_clean = question.encode('latin-1', 'ignore').decode('latin-1')
+            
+            # Split question by lines
+            question_lines = question_clean.split('\n')
+            for line in question_lines:
+                if line.strip():
+                    try:
+                        pdf.multi_cell(0, 5, line)
+                    except Exception as e:
+                        # If a line fails, skip it and log
+                        print(f"⚠️ Skipped problematic line: {e}")
+                        continue
+            
+            pdf.ln(5)
+        
+        # Add separator before answers
+        pdf.ln(10)
+        pdf.set_draw_color(200, 200, 200)
+        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+        pdf.ln(5)
+        
+        # Answers section
+        pdf.set_font('helvetica', 'B', 14)
+        pdf.set_text_color(200, 50, 50)
+        pdf.cell(0, 10, 'ANSWERS (Check after solving!)', 0, 1, 'C')
+        pdf.ln(3)
+        
+        pdf.set_font('helvetica', '', 10)
         pdf.set_text_color(0, 0, 0)
         
-        # Split question by lines and handle LaTeX markers
-        question_lines = question.split('\n')
-        for line in question_lines:
-            if line.strip():
-                pdf.multi_cell(0, 5, line)
+        for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
+            # Extract answer from question text
+            answer_line = "Answer not found"
+            question_clean = question.encode('latin-1', 'ignore').decode('latin-1')
+            for line in question_clean.split('\n'):
+                if line.strip().startswith('Answer:'):
+                    answer_line = line.strip()
+                    break
+            
+            try:
+                pdf.cell(0, 6, f"{i}. {subject}: {answer_line}", 0, 1)
+            except Exception as e:
+                print(f"⚠️ Skipped answer for {subject}: {e}")
+                pdf.cell(0, 6, f"{i}. {subject}: See PDF for answer", 0, 1)
         
-        pdf.ln(5)
-    
-    # Add separator before answers
-    pdf.ln(10)
-    pdf.set_draw_color(200, 200, 200)
-    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(5)
-    
-    # Answers section
-    pdf.set_font('Helvetica', 'B', 14)
-    pdf.set_text_color(200, 50, 50)
-    pdf.cell(0, 10, 'ANSWERS (Check after solving!)', 0, 1, 'C')
-    pdf.ln(3)
-    
-    pdf.set_font('Helvetica', '', 10)
-    pdf.set_text_color(0, 0, 0)
-    
-    for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
-        # Extract answer from question text
-        answer_line = "Answer not found"
-        for line in question.split('\n'):
-            if line.strip().startswith('Answer:'):
-                answer_line = line.strip()
-                break
+        # Save PDF
+        filename = f"da_quiz_{datetime.now().strftime('%Y%m%d')}.pdf"
+        pdf.output(filename)
+        print(f"📄 PDF created: {filename}")
         
-        pdf.cell(0, 6, f"{i}. {subject}: {answer_line}", 0, 1)
+        return filename
     
-    # Save PDF
-    filename = f"da_quiz_{datetime.now().strftime('%Y%m%d')}.pdf"
-    pdf.output(filename)
-    print(f"📄 PDF created: {filename}")
-    
-    return filename
+    except Exception as e:
+        print(f"❌ Error creating PDF: {str(e)}")
+        print(f"📝 Full error details: {repr(e)}")
+        raise
 
 # ============================================================================
 # EMAIL DELIVERY
