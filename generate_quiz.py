@@ -66,56 +66,88 @@ def generate_question(subject, topic, retry_count=3):
         "Content-Type": "application/json"
     }
     
-    prompt = f"""Generate ONE extremely challenging GATE DA (Data Science & AI) exam question.
+    prompt = f"""Generate ONE challenging GATE DA (Data Science & AI) exam question.
 
 Subject: {subject}
 Topic: {topic}
 
-CRITICAL FORMATTING RULES:
-1. Write questions in NATURAL EXAM LANGUAGE - like a real GATE paper
-2. For math expressions, use WORDS and DESCRIPTIONS:
-   - Instead of: "1/(1 + exp(-z))"
-   - Write: "the sigmoid function sigma(z), which equals one divided by (one plus e raised to the power negative z)"
-   - OR: "the logistic function with output between 0 and 1"
-   
-3. Make it READABLE and CONVERSATIONAL - like a professor asking a question
-4. Use proper mathematical terminology in plain English
-5. GATE DA 2026 exam difficulty level (challenging but clear)
-6. Four options (A, B, C, D) with ONE correct answer
-7. Include numerical values where needed
-8. Test deep conceptual understanding
+FORMATTING RULES:
+1. Write PROPER GATE exam questions with actual formulas and numbers
+2. Use SIMPLE ASCII math notation:
+   - Powers: x^2, x^3, e^(-z)
+   - Fractions: 1/2, (a+b)/c
+   - Multiplication: * or just write "2x"
+   - Division: / or ÷
+   - Greek letters: spell them out (lambda, sigma, theta, alpha, beta, mu)
+   - Comparisons: <=, >=, !=, ~=
+   - Special: sqrt(), sum(), infinity
+3. Include NUMERICAL calculations and formulas
+4. Keep questions CONCISE but clear (like real GATE papers)
+5. GATE DA 2026 difficulty level
 
-Format (STRICT):
-Q. [Write the question in natural, exam-like language - explain concepts clearly]
+Format:
+Q. [Question with actual numbers and formulas]
 
-(A) [First option - clear and descriptive]
-(B) [Second option - clear and descriptive]
-(C) [Third option - clear and descriptive]
-(D) [Fourth option - clear and descriptive]
+(A) [Option with numbers]
+(B) [Option with numbers]
+(C) [Option with numbers]
+(D) [Option with numbers]
 
 Answer: (X)
 
-GOOD Example (Natural Language):
-Q. In a medical diagnostic test, the probability of a positive result given that a patient has the disease is 0.95 (sensitivity), and the probability of a positive result given that the patient does not have the disease is 0.02 (false positive rate). If 1% of the population has this disease, and a randomly selected person tests positive, what is the probability that this person actually has the disease? Use Bayes' theorem to calculate P(Disease|Positive Test).
+GOOD Examples:
 
-(A) Approximately 32.4%
-(B) Approximately 42.7%
-(C) Approximately 52.1%
-(D) Approximately 95.0%
+Example 1 (Bayes):
+Q. A medical test has sensitivity 0.95 and specificity 0.98. If disease prevalence is 1%, what is P(Disease|Positive) using Bayes' theorem?
+
+(A) 0.324
+(B) 0.487
+(C) 0.657
+(D) 0.950
 
 Answer: (A)
 
-BAD Example (Too technical/code-like):
-Q. Given P(D) = 0.01, P(+|D) = 0.95, calculate P(D|+) using P(D|+) = P(+|D)*P(D)/P(+)
+Example 2 (Linear Algebra):
+Q. Matrix A = [[2,1],[1,2]] has eigenvalues lambda_1 and lambda_2. What is det(A - 3I)?
 
-NOW GENERATE a question that reads like a REAL GATE EXAM PAPER (natural, clear, exam-style):"""
+(A) -5
+(B) 0
+(C) 3
+(D) 5
+
+Answer: (B)
+
+Example 3 (Statistics):
+Q. For X ~ N(mu=50, sigma^2=25), what is P(45 <= X <= 55)?
+
+(A) 0.68
+(B) 0.95
+(C) 0.997
+(D) 1.0
+
+Answer: (A)
+
+Example 4 (ML):
+Q. Logistic regression uses sigmoid sigma(z) = 1/(1 + e^(-z)). If z = 3, find sigma(z) given e^(-3) = 0.05.
+
+(A) 0.90
+(B) 0.95
+(C) 0.98
+(D) 0.99
+
+Answer: (B)
+
+BAD Example (Too wordy):
+Q. In a medical diagnosis scenario where a patient is suspected to have a certain disease and the probability...
+
+NOW GENERATE (concise GATE question with real numbers):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",  # Latest, fastest, FREE!
         "messages": [
             {
                 "role": "system",
-                "content": "You are an expert GATE DA exam question creator. Write questions in natural, clear exam language - like a real GATE paper. Use descriptive mathematical terms in plain English. Make questions challenging but readable and professional."
+                "content": "You are a GATE DA exam question creator. Write CONCISE questions with actual numbers and formulas. Use simple ASCII notation: x^2, lambda, sigma, sqrt(), <=, >=. Keep questions short and precise like real GATE papers."
             },
             {
                 "role": "user",

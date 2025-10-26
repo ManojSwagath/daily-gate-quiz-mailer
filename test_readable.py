@@ -31,37 +31,25 @@ def generate_test_question(subject, topic):
 Subject: {subject}
 Topic: {topic}
 
-CRITICAL: Write like a REAL EXAM QUESTION - natural, clear language!
+Use CONCISE language with ACTUAL numbers and formulas!
+Use simple ASCII: x^2, lambda, sigma, <=, >=, sqrt()
 
-For math: Use words like "squared", "raised to power", "divided by", etc.
-Make it sound like a professor asking a question, not code.
+Example:
+Q. For X ~ N(mu=100, sigma^2=400), find P(90 < X < 110).
 
-Format:
-Q. [Natural exam-style question - explain clearly]
-
-(A) Descriptive option A
-(B) Descriptive option B  
-(C) Descriptive option C
-(D) Descriptive option D
-
-Answer: (X)
-
-GOOD Example:
-Q. A classifier achieves 95% accuracy on a test set of 1000 samples where 10% of samples belong to the positive class. If the classifier predicts all samples as negative class, what would be its accuracy on this same test set?
-
-(A) 85%
-(B) 90%
-(C) 95%
-(D) 100%
+(A) 0.383
+(B) 0.683
+(C) 0.950
+(D) 0.997
 
 Answer: (B)
 
-NOW GENERATE (natural exam language):"""
+NOW GENERATE (short question with real math):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": "You are a GATE exam question creator. Write questions in natural, exam-like language. Use descriptive words instead of symbols. Make it sound like a real professor asking a challenging question."},
+            {"role": "system", "content": "You are a GATE exam creator. Write SHORT, PRECISE questions with real numbers and formulas using simple ASCII: x^2, lambda, sigma, sqrt(), <=, >=. NO Unicode symbols. Keep it concise like actual GATE papers."},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": 500,
