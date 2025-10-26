@@ -31,34 +31,37 @@ def generate_test_question(subject, topic):
 Subject: {subject}
 Topic: {topic}
 
-CRITICAL: Use PLAIN TEXT only - NO LaTeX symbols ($, $$, etc.)
+CRITICAL: Write like a REAL EXAM QUESTION - natural, clear language!
+
+For math: Use words like "squared", "raised to power", "divided by", etc.
+Make it sound like a professor asking a question, not code.
 
 Format:
-Q. [Question in plain text]
+Q. [Natural exam-style question - explain clearly]
 
-(A) Option A
-(B) Option B  
-(C) Option C
-(D) Option D
+(A) Descriptive option A
+(B) Descriptive option B  
+(C) Descriptive option C
+(D) Descriptive option D
 
 Answer: (X)
 
-Example:
-Q. Given P(A) = 0.3, P(B) = 0.5, and P(B|A) = 0.6. Using Bayes theorem, what is P(A|B)?
+GOOD Example:
+Q. A classifier achieves 95% accuracy on a test set of 1000 samples where 10% of samples belong to the positive class. If the classifier predicts all samples as negative class, what would be its accuracy on this same test set?
 
-(A) 0.24
-(B) 0.36
-(C) 0.42
-(D) 0.48
+(A) 85%
+(B) 90%
+(C) 95%
+(D) 100%
 
 Answer: (B)
 
-NOW GENERATE (plain text only):"""
+NOW GENERATE (natural exam language):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": "You are a GATE exam question creator. Use PLAIN TEXT only - absolutely NO LaTeX symbols or $ signs."},
+            {"role": "system", "content": "You are a GATE exam question creator. Write questions in natural, exam-like language. Use descriptive words instead of symbols. Make it sound like a real professor asking a challenging question."},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": 500,

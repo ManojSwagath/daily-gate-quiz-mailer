@@ -72,48 +72,50 @@ Subject: {subject}
 Topic: {topic}
 
 CRITICAL FORMATTING RULES:
-1. DO NOT use LaTeX symbols ($, $$, etc.)
-2. Use plain text for ALL math:
-   - Instead of $x^2$, write: x^2 or x squared
-   - Instead of $\frac{{a}}{{b}}$, write: a/b
-   - Instead of $\sqrt{{x}}$, write: sqrt(x)
-   - Instead of $$equation$$, write it inline with normal text
-3. GATE DA 2026 exam difficulty level (top 10% hardest questions)
-4. Four options (A, B, C, D) with ONE correct answer
-5. Include numerical calculations where applicable
-6. Test deep conceptual understanding
+1. Write questions in NATURAL EXAM LANGUAGE - like a real GATE paper
+2. For math expressions, use WORDS and DESCRIPTIONS:
+   - Instead of: "1/(1 + exp(-z))"
+   - Write: "the sigmoid function sigma(z), which equals one divided by (one plus e raised to the power negative z)"
+   - OR: "the logistic function with output between 0 and 1"
+   
+3. Make it READABLE and CONVERSATIONAL - like a professor asking a question
+4. Use proper mathematical terminology in plain English
+5. GATE DA 2026 exam difficulty level (challenging but clear)
+6. Four options (A, B, C, D) with ONE correct answer
+7. Include numerical values where needed
+8. Test deep conceptual understanding
 
-Format (STRICT - NO LATEX):
-Q. [Your challenging question here in PLAIN TEXT - no $ symbols]
+Format (STRICT):
+Q. [Write the question in natural, exam-like language - explain concepts clearly]
 
-(A) [First option in plain text]
-(B) [Second option in plain text]
-(C) [Third option in plain text]
-(D) [Fourth option in plain text]
+(A) [First option - clear and descriptive]
+(B) [Second option - clear and descriptive]
+(C) [Third option - clear and descriptive]
+(D) [Fourth option - clear and descriptive]
 
 Answer: (X)
 
-GOOD Example:
-Q. Given P(A) = 0.3, P(B) = 0.5, and P(B|A) = 0.6. Using Bayes theorem P(A|B) = P(B|A) * P(A) / P(B), what is P(A|B)?
+GOOD Example (Natural Language):
+Q. In a medical diagnostic test, the probability of a positive result given that a patient has the disease is 0.95 (sensitivity), and the probability of a positive result given that the patient does not have the disease is 0.02 (false positive rate). If 1% of the population has this disease, and a randomly selected person tests positive, what is the probability that this person actually has the disease? Use Bayes' theorem to calculate P(Disease|Positive Test).
 
-(A) 0.24
-(B) 0.36
-(C) 0.42
-(D) 0.48
+(A) Approximately 32.4%
+(B) Approximately 42.7%
+(C) Approximately 52.1%
+(D) Approximately 95.0%
 
-Answer: (B)
+Answer: (A)
 
-BAD Example (DO NOT DO THIS):
-Q. Given $P(A) = 0.3$, $P(B) = 0.5$...
+BAD Example (Too technical/code-like):
+Q. Given P(D) = 0.01, P(+|D) = 0.95, calculate P(D|+) using P(D|+) = P(+|D)*P(D)/P(+)
 
-NOW GENERATE in PLAIN TEXT (no LaTeX symbols):"""
+NOW GENERATE a question that reads like a REAL GATE EXAM PAPER (natural, clear, exam-style):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",  # Latest, fastest, FREE!
         "messages": [
             {
                 "role": "system",
-                "content": "You are an expert GATE DA exam question creator. Generate challenging, accurate questions with proper LaTeX formatting."
+                "content": "You are an expert GATE DA exam question creator. Write questions in natural, clear exam language - like a real GATE paper. Use descriptive mathematical terms in plain English. Make questions challenging but readable and professional."
             },
             {
                 "role": "user",
