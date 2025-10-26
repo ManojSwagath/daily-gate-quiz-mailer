@@ -8,7 +8,9 @@ import os
 import json
 import requests
 from datetime import datetime
-from fpdf import FPDF  # fpdf2 package, imports as 'fpdf'
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from textwrap import wrap
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -197,115 +199,107 @@ Answer: (D)
 [Note: This is a fallback question. Check API configuration if you see this.]"""
 
 # ============================================================================
-# PDF GENERATION
+# PDF GENERATION (Using ReportLab)
 # ============================================================================
 
-class QuizPDF(FPDF):
-    """Custom PDF class for quiz generation"""
+def create_pdf(questions, filename='quiz.pdf'):
+    """Create PDF using ReportLab - efficient and robust"""
+    c = canvas.Canvas(filename, pagesize=A4)
+    width, height = A4
     
-    def header(self):
-        """PDF Header with title and date"""
-        self.set_font('helvetica', 'B', 18)
-        self.set_text_color(255, 107, 53)  # Orange color
-        self.cell(0, 10, 'Daily DA 2026 Quiz', 0, 1, 'C')
-        
-        self.set_font('helvetica', '', 12)
-        self.set_text_color(0, 0, 0)
-        self.cell(0, 8, datetime.now().strftime('%B %d, %Y'), 0, 1, 'C')
-        self.ln(5)
+    # Title
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(200, height - 60, "GATE DA Daily Practice Quiz")
     
-    def footer(self):
-        """PDF Footer"""
-        self.set_y(-15)
-        self.set_font('helvetica', 'I', 8)
-        self.set_text_color(128, 128, 128)
-        self.cell(0, 10, 'Generated with AI - Good luck!', 0, 0, 'C')
-
-def create_pdf(questions):
-    """
-    Create a professionally formatted PDF with all questions
+    # Date
+    c.setFont("Helvetica", 10)
+    date_str = datetime.now().strftime("%B %d, %Y")
+    c.drawString(250, height - 80, date_str)
     
-    Args:
-        questions: Dict of {subject: (topic, question_text)}
+    # Motivational text
+    c.setFont("Helvetica-Oblique", 11)
+    c.setFillColorRGB(0.4, 0.4, 0.4)
+    c.drawCentredString(width/2, height - 100, "Solve all questions before checking answers at the bottom!")
     
-    Returns:
-        Filename of generated PDF
-    """
-    try:
-        pdf = QuizPDF()
-        pdf.add_page()
-        
-        # Add motivational header
-        pdf.set_font('helvetica', 'I', 11)
-        pdf.set_text_color(100, 100, 100)
-        pdf.multi_cell(0, 6, 'Solve all questions before checking answers at the bottom!', 0, 'C')
-        pdf.ln(8)
-        
-        # Add questions
-        for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
-            # Subject header
-            pdf.set_font('helvetica', 'B', 13)
-            pdf.set_text_color(50, 50, 150)
-            pdf.cell(0, 8, f"{i}. {subject} - {topic}", 0, 1)
-            
-            # Question text
-            pdf.set_font('helvetica', '', 10)
-            pdf.set_text_color(0, 0, 0)
-            
-            # Use write() instead of multi_cell - better for long lines
-            for line in question.split('\n'):
-                line = line.strip()
-                if line:
-                    try:
-                        pdf.write(5, line)
-                        pdf.ln()
-                    except Exception as e:
-                        print(f"⚠️ Skipped line: {str(e)[:60]}")
-            
-            pdf.ln(5)
-        
-        # Add separator before answers
-        pdf.ln(10)
-        pdf.set_draw_color(200, 200, 200)
-        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-        pdf.ln(5)
-        
-        # Answers section
-        pdf.set_font('helvetica', 'B', 14)
-        pdf.set_text_color(200, 50, 50)
-        pdf.cell(0, 10, 'ANSWERS (Check after solving!)', 0, 1, 'C')
-        pdf.ln(3)
-        
-        pdf.set_font('helvetica', '', 10)
-        pdf.set_text_color(0, 0, 0)
-        
-        for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
-            # Extract answer from question text
-            answer_line = "Answer not found"
-            for line in question.split('\n'):
-                if line.strip().startswith('Answer:'):
-                    answer_line = line.strip()
-                    break
-            
-            try:
-                pdf.cell(0, 6, f"{i}. {subject}: {answer_line}", 0, 1)
-            except Exception as e:
-                print(f"⚠️ Skipped answer for {subject}: {e}")
-                pdf.cell(0, 6, f"{i}. {subject}: See questions above", 0, 1)
-        
-        # Save PDF
-        filename = f"da_quiz_{datetime.now().strftime('%Y%m%d')}.pdf"
-        pdf.output(filename)
-        print(f"📄 PDF created: {filename}")
-        
-        return filename
+    y = height - 140
     
-    except Exception as e:
-        print(f"❌ Error creating PDF: {str(e)}")
-        print(f"📝 Full error details: {repr(e)}")
-        raise
+    # Add questions
+    for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
+        # Check if we need a new page
+        if y < 150:
+            c.showPage()
+            c.setFont("Helvetica", 12)
+            y = height - 60
+        
+        # Question header
+        c.setFont("Helvetica-Bold", 13)
+        c.setFillColorRGB(0.2, 0.2, 0.6)
+        header = f"{i}. {subject} - {topic}"
+        c.drawString(60, y, header)
+        y -= 20
+        
+        # Question text
+        c.setFont("Helvetica", 10)
+        c.setFillColorRGB(0, 0, 0)
+        
+        lines = question.split('\n')
+        for line in lines:
+            if line.strip() and not line.strip().startswith('Answer:'):
+                # Wrap long lines
+                wrapped_lines = wrap(line.strip(), 95)
+                for wline in wrapped_lines:
+                    if y < 100:
+                        c.showPage()
+                        c.setFont("Helvetica", 10)
+                        y = height - 60
+                    
+                    c.drawString(60, y, wline)
+                    y -= 15
+        
+        y -= 10
+    
+    # Add separator before answers
+    y -= 10
+    if y < 200:
+        c.showPage()
+        y = height - 60
+    
+    c.setStrokeColorRGB(0.8, 0.8, 0.8)
+    c.line(60, y, width - 60, y)
+    y -= 20
+    
+    # Answers section
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColorRGB(0.8, 0.2, 0.2)
+    c.drawCentredString(width/2, y, "ANSWERS (Check after solving!)")
+    y -= 25
+    
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
+    
+    for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
+        if y < 100:
+            c.showPage()
+            c.setFont("Helvetica", 10)
+            y = height - 60
+        
+        # Extract answer
+        answer_line = "Answer not found"
+        for line in question.split('\n'):
+            if line.strip().startswith('Answer:'):
+                answer_line = line.strip()
+                break
+        
+        c.drawString(60, y, f"{i}. {subject}: {answer_line}")
+        y -= 18
+    
+    c.save()
+    print(f"✅ PDF created: {filename}")
+    return filename
 
 # ============================================================================
+# PROGRESS VISUALIZATION
+# ============================================================================"""
 # EMAIL DELIVERY
 # ============================================================================
 

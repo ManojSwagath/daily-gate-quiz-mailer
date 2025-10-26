@@ -11,7 +11,9 @@ os.environ['FRIENDS'] = ''
 
 import json
 import requests
-from fpdf import FPDF
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from textwrap import wrap
 from datetime import datetime
 
 # Load syllabus
@@ -85,35 +87,53 @@ for subject, topic in test_subjects:
     print("="*70)
     print()
 
-# Create PDF
+# Create PDF using ReportLab
 print("\n📄 Creating test PDF...")
 
-class TestPDF(FPDF):
-    def header(self):
-        self.set_font('helvetica', 'B', 16)
-        self.cell(0, 10, 'GATE DA Test Quiz - Readability Check', 0, 1, 'C')
-        self.ln(5)
+c = canvas.Canvas("test_quiz_readable.pdf", pagesize=A4)
+width, height = A4
 
-pdf = TestPDF()
-pdf.add_page()
+# Title
+c.setFont("Helvetica-Bold", 16)
+c.drawString(200, height - 60, "GATE DA Test Quiz - Readability Check")
+
+y = height - 100
 
 for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
-    pdf.set_font('helvetica', 'B', 12)
-    pdf.set_text_color(0, 0, 150)
-    pdf.cell(0, 8, f"{i}. {subject} - {topic}", 0, 1)
+    # Check if we need a new page
+    if y < 150:
+        c.showPage()
+        c.setFont("Helvetica", 12)
+        y = height - 60
     
-    pdf.set_font('helvetica', '', 10)
-    pdf.set_text_color(0, 0, 0)
+    # Question header
+    c.setFont("Helvetica-Bold", 11)
+    c.setFillColorRGB(0, 0, 0.6)
+    header = f"{i}. {subject} - {topic}"
+    c.drawString(60, y, header)
+    y -= 20
     
-    for line in question.split('\n'):
+    # Question text
+    c.setFont("Helvetica", 10)
+    c.setFillColorRGB(0, 0, 0)
+    
+    lines = question.split('\n')
+    for line in lines:
         if line.strip():
-            # Use write() instead of multi_cell for better compatibility
-            pdf.write(5, line.strip())
-            pdf.ln()
+            # Wrap long lines
+            wrapped_lines = wrap(line, 95)
+            for wline in wrapped_lines:
+                if y < 100:
+                    c.showPage()
+                    c.setFont("Helvetica", 10)
+                    y = height - 60
+                
+                c.drawString(60, y, wline)
+                y -= 15
     
-    pdf.ln(5)
+    y -= 10
 
-pdf.output('test_quiz_readable.pdf')
+c.save()
 print("✅ PDF created: test_quiz_readable.pdf")
 print("\n📂 Opening PDF...")
 
