@@ -1,200 +1,152 @@
-# 🔥 Daily GATE DA Quiz Mailer - 100% FREE!
+# 🎓 Daily GATE DA Quiz Mailer
 
-<div align="center">
+**Automated daily GATE Data Science & AI quiz delivery via email using AI-generated questions.**
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
-![Cost](https://img.shields.io/badge/Cost-$0_Forever-brightgreen.svg)
-![AI](https://img.shields.io/badge/AI-Groq_LLaMA_3.1-orange.svg)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Free](https://img.shields.io/badge/Cost-$0-brightgreen.svg)](https://github.com/ManojSwagath/daily-gate-quiz-mailer)
 
-**Automated daily GATE DA questions for you + 3 friends. Zero costs. Zero hassle.** 💸
+## Overview
 
-*No credit card. No cloud bills. Just free AI + free automation!*
+Automatically generates and emails 8 challenging GATE DA questions daily to you and your study group. Questions cover all 94 topics across 8 core subjects with proper LaTeX formatting.
 
-</div>
+## Features
 
----
+- 🤖 **AI-Powered**: Uses Groq API (LLaMA 3.3 70B) for question generation
+- 📧 **Auto Delivery**: Gmail SMTP sends PDF to multiple recipients daily
+- 🔄 **Smart Rotation**: Cycles through all syllabus topics systematically
+- 📊 **PDF Format**: Professional formatting with questions and answers
+- ⏰ **Scheduled**: Runs daily at 6:00 AM IST via GitHub Actions
+- 💯 **100% Free**: No subscriptions, no cloud costs
 
-## ✨ Features
+## Tech Stack
 
-- 🤖 **AI-Generated Questions** - Uses Groq API (LLaMA 3.1 70B) - SUPER FAST & FREE!
-- 📧 **Auto Email Delivery** - Gmail SMTP sends to you + 3 friends daily
-- 🔄 **Smart Topic Rotation** - Cycles through all 94 GATE DA topics systematically
-- 📊 **Professional PDFs** - Clean formatting with questions and answers
-- ⏰ **Automated Scheduling** - GitHub Actions runs daily at 6:00 AM IST
-- 💯 **100% FREE** - No subscriptions, no hidden costs, EVER!
-
-## 🚀 Quick Setup (15 Minutes)
-
-### Step 1: Get Your FREE API Key (Groq)
-1. Visit: https://console.groq.com/keys
-2. Sign in with GitHub (instant!)
-3. Click "Create API Key" → Copy it
-
-### Step 2: Fork & Configure This Repo
-1. **Fork this repository** to your GitHub account
-2. Go to your forked repo's **Settings → Secrets → Actions**
-3. Add these 4 secrets:
-
-| Secret Name | Value | Where to Get |
-|------------|-------|--------------|
-| `GROQ_API_KEY` | `gsk_abc...` | https://console.groq.com/keys |
-| `GMAIL_USER` | `your.email@gmail.com` | Your Gmail address |
-| `GMAIL_PASS` | `xxxx xxxx xxxx xxxx` | Gmail App Password (see below) |
-| `FRIENDS` | `friend1@gmail.com,friend2@gmail.com` | Comma-separated emails |
-
-### Step 3: Get Gmail App Password
-1. Enable 2-Step Verification: https://myaccount.google.com/security
-2. Generate App Password: https://myaccount.google.com/apppasswords
-3. Select "Mail" + "Other (Custom name)"
-4. Copy the 16-character password
-
-### Step 4: Test It!
-1. Go to **Actions** tab in your repo
-2. Click "Daily DA 2026 Quiz Mailer"
-3. Click "Run workflow" → "Run workflow"
-4. Wait 2-3 minutes → Check your email! 📧
-
-## 💰 Why This is 100% FREE
-
-| Service | Free Tier | What We Use | Cost |
-|---------|-----------|-------------|------|
-| **Groq API** | 30 requests/min | 8 requests/day | **$0** |
-| **GitHub Actions** | 2,000 min/month | ~1 min/day = 30 min/month | **$0** |
-| **Gmail SMTP** | Normal usage limits | 1 email/day to 4 people | **$0** |
-| **GitHub Storage** | Unlimited for code | Few KB of JSON files | **$0** |
-
-**Monthly Savings**: $50+ compared to paid quiz services! 💰
-
-## 🛠️ Tech Stack (All FREE!)
-
-- **AI Engine**: Groq API (LLaMA 3.1 70B) - 30 req/min free
-- **Automation**: GitHub Actions - 2,000 min/month free
-- **Email**: Gmail SMTP - Unlimited free emails
+- **AI**: Groq API (free tier)
+- **Automation**: GitHub Actions (free tier)
+- **Email**: Gmail SMTP
+- **PDF**: FPDF2 library
 - **Language**: Python 3.11+
-- **Libraries**: `fpdf2`, `requests`, `smtplib`
 
-**Total Monthly Cost**: $0.00 (saves you ~$50/month vs paid services!)
+## Quick Setup
 
-## 📂 Project Structure
+### 1. Fork This Repository
 
-```
-daily-gate-quiz-mailer/
-├── generate_quiz.py              # Main script (AI + PDF + Email)
-├── syllabus.json                 # 94 GATE DA topics across 8 subjects
-├── requirements.txt              # Python dependencies
-├── .github/workflows/daily.yml   # GitHub Actions automation
-├── progress.json                 # Auto-generated topic tracker
-└── README.md                     # This file
-```
+Click "Fork" at the top right of this page.
 
-## 📚 GATE DA 2026 Syllabus Coverage
+### 2. Add GitHub Secrets
 
-**8 Core Subjects | 94 High-Weightage Topics**
+Go to: `Settings` → `Secrets and variables` → `Actions` → `New repository secret`
 
-1. **Probability & Statistics** (17 topics)
-2. **Linear Algebra** (13 topics)
-3. **Calculus & Optimization** (6 topics)
-4. **Programming & Data Structures** (11 topics)
-5. **Database Management** (16 topics)
-6. **Machine Learning - Supervised** (14 topics)
-7. **Machine Learning - Unsupervised** (8 topics)
-8. **Artificial Intelligence** (9 topics)
+Add these 4 secrets:
 
-The system automatically rotates through all topics, ensuring complete syllabus coverage!
+| Name | Value | How to Get |
+|------|-------|------------|
+| `GROQ_API_KEY` | Your Groq API key | [Get from Groq Console](https://console.groq.com/keys) |
+| `GMAIL_USER` | your.email@gmail.com | Your Gmail address |
+| `GMAIL_PASS` | xxxx xxxx xxxx xxxx | [Gmail App Password](https://myaccount.google.com/apppasswords) |
+| `FRIENDS` | email1@gmail.com,email2@gmail.com | Comma-separated recipient list |
 
-## 🔧 How It Works
+### 3. Enable GitHub Actions
 
-```mermaid
-graph LR
-    A[GitHub Actions<br/>Triggers Daily] --> B[Python Script<br/>Runs]
-    B --> C[Groq API<br/>Generates Questions]
-    C --> D[FPDF2<br/>Creates PDF]
-    D --> E[Gmail SMTP<br/>Sends Email]
-    E --> F[You + 3 Friends<br/>Receive Quiz]
-```
+1. Go to `Actions` tab
+2. Click "I understand my workflows, go ahead and enable them"
 
-1. **Every day at 6:00 AM IST**, GitHub Actions triggers the workflow
-2. **Python script** selects 8 topics (one from each subject)
-3. **Groq AI** generates extremely hard GATE-level questions with LaTeX
-4. **FPDF2** creates a professional PDF with questions and answers
-5. **Gmail SMTP** emails the PDF to you and your 3 friends
-6. **Progress tracker** updates to cycle to next topics tomorrow
+### 4. Test Run (Optional)
 
-## 📖 Detailed Setup Guide
+1. Go to `Actions` → `Daily DA 2026 Quiz Mailer`
+2. Click `Run workflow` → `Run workflow`
+3. Check your email in 2-3 minutes
 
-For step-by-step instructions with screenshots, see:
-- [SETUP_GUIDE.md](SETUP_GUIDE.md) - Complete walkthrough
-- [GROQ_SETUP.md](GROQ_SETUP.md) - Groq API key setup
-- [IMPORTANT_TOPICS.md](IMPORTANT_TOPICS.md) - Topic weightage guide
+## Configuration
 
-## 🎯 Customization
+### Change Schedule
 
-### Change Quiz Schedule
 Edit `.github/workflows/daily.yml`:
 ```yaml
 schedule:
-  - cron: '30 0 * * *'  # 6:00 AM IST
-  # Change to: '0 12 * * *' for 5:30 PM IST
+  - cron: '30 0 * * *'  # 6:00 AM IST (default)
 ```
 
-### Add/Remove Topics
-Edit `syllabus.json`:
-```json
-{
-  "Probability & Statistics": [
-    "Bayes Theorem",
-    "Your Custom Topic"
-  ]
-}
+### Modify Syllabus
+
+Edit `syllabus.json` to add/remove topics.
+
+### Add More Recipients
+
+Update `FRIENDS` secret with comma-separated emails (no spaces).
+
+## Project Structure
+
+```
+.
+├── .github/
+│   └── workflows/
+│       └── daily.yml          # GitHub Actions workflow
+├── generate_quiz.py           # Main script
+├── syllabus.json              # GATE DA 2026 topics
+├── requirements.txt           # Python dependencies
+└── progress.json              # Auto-generated tracker
 ```
 
-### Add More Friends
-Update GitHub Secret `FRIENDS`:
+## GATE DA Syllabus Coverage
+
+**94 Topics across 8 Subjects:**
+
+1. Probability and Statistics (17 topics)
+2. Linear Algebra (13 topics)
+3. Calculus and Optimization (6 topics)
+4. Programming and Data Structures (11 topics)
+5. Database Management and Warehousing (16 topics)
+6. Machine Learning - Supervised (14 topics)
+7. Machine Learning - Unsupervised (8 topics)
+8. Artificial Intelligence (9 topics)
+
+## How It Works
+
 ```
-friend1@gmail.com,friend2@gmail.com,friend3@gmail.com,friend4@gmail.com
+Daily Trigger (6 AM IST)
+    ↓
+Select 8 Topics (1 per subject)
+    ↓
+Groq API Generates Questions
+    ↓
+Create PDF with FPDF2
+    ↓
+Send via Gmail SMTP
+    ↓
+Update Progress Tracker
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
-### Email not received?
-1. Check GitHub Actions logs: `Actions` tab → Latest run → View logs
-2. Verify Gmail App Password (16 characters, no spaces)
-3. Check spam folder
+**Email not received?**
+- Check GitHub Actions logs in `Actions` tab
+- Verify all 4 secrets are added correctly
+- Check spam/junk folder
 
-### Questions look weird?
-- LaTeX rendering happens in PDF viewer (Adobe, Chrome PDF viewer work best)
-- Some email clients show raw LaTeX - download PDF attachment instead
+**Workflow not running?**
+- Ensure GitHub Actions is enabled
+- Check if workflow is disabled in `Actions` tab
+- Verify cron schedule syntax
 
-### Workflow not running?
-1. Ensure all 4 secrets are added correctly
-2. GitHub Actions must be enabled: `Settings` → `Actions` → `Allow all actions`
-3. Check if workflow is disabled: `Actions` tab → Enable workflow
+**Questions quality issues?**
+- Groq API free tier has rate limits (30 req/min)
+- Check API key validity at [Groq Console](https://console.groq.com/)
 
-## 🤝 Contributing
+## Contributing
 
-Found a bug? Want to add features?
-1. Fork this repo
-2. Create a branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -m 'Add feature'`
-4. Push: `git push origin feature-name`
-5. Open a Pull Request
+Pull requests welcome! For major changes, please open an issue first.
 
-## 📝 License
+## License
 
-MIT License - Use it, modify it, share it freely!
+[MIT](LICENSE)
 
-## ⭐ Show Your Support
+## Acknowledgments
 
-If this helped you ace GATE DA 2026, give it a ⭐ on GitHub!
+- Groq for free AI API
+- GitHub for free CI/CD
+- GATE DA 2026 syllabus
 
 ---
 
-<div align="center">
-
-**Built with ❤️ by broke students, for broke students!**
-
-*No venture capital. No subscriptions. Just pure open source.*
-
-[Report Bug](https://github.com/ManojSwagath/daily-gate-quiz-mailer/issues) • [Request Feature](https://github.com/ManojSwagath/daily-gate-quiz-mailer/issues)
-
-</div>
+**⭐ Star this repo if it helps your GATE prep!**
