@@ -102,7 +102,7 @@ Answer: (B)
 NOW GENERATE for GATE DA 2026 exam:"""
 
     payload = {
-        "model": "llama-3.1-70b-versatile",  # Fast, high-quality, FREE!
+        "model": "llama-3.3-70b-versatile",  # Latest, fastest, FREE!
         "messages": [
             {
                 "role": "system",
