@@ -71,26 +71,30 @@ def generate_question(subject, topic, retry_count=3):
 Subject: {subject}
 Topic: {topic}
 
-Requirements:
-1. GATE DA 2026 exam difficulty level (top 10% hardest questions)
-2. Use LaTeX for math: $x^2$ for inline, $$equation$$ for block
-3. Four options (A, B, C, D) with ONE correct answer
-4. Include numerical calculations where applicable
-5. Test deep conceptual understanding
-6. Focus on GATE DA exam patterns
+CRITICAL FORMATTING RULES:
+1. DO NOT use LaTeX symbols ($, $$, etc.)
+2. Use plain text for ALL math:
+   - Instead of $x^2$, write: x^2 or x squared
+   - Instead of $\frac{{a}}{{b}}$, write: a/b
+   - Instead of $\sqrt{{x}}$, write: sqrt(x)
+   - Instead of $$equation$$, write it inline with normal text
+3. GATE DA 2026 exam difficulty level (top 10% hardest questions)
+4. Four options (A, B, C, D) with ONE correct answer
+5. Include numerical calculations where applicable
+6. Test deep conceptual understanding
 
-Format (STRICT):
-Q. [Your challenging question here with LaTeX if needed]
+Format (STRICT - NO LATEX):
+Q. [Your challenging question here in PLAIN TEXT - no $ symbols]
 
-(A) [First option]
-(B) [Second option]
-(C) [Third option]
-(D) [Fourth option]
+(A) [First option in plain text]
+(B) [Second option in plain text]
+(C) [Third option in plain text]
+(D) [Fourth option in plain text]
 
 Answer: (X)
 
-Example for Bayes Theorem:
-Q. Given P(A) = 0.3, P(B) = 0.5, and P(B|A) = 0.6. What is P(A|B)?
+GOOD Example:
+Q. Given P(A) = 0.3, P(B) = 0.5, and P(B|A) = 0.6. Using Bayes theorem P(A|B) = P(B|A) * P(A) / P(B), what is P(A|B)?
 
 (A) 0.24
 (B) 0.36
@@ -99,7 +103,10 @@ Q. Given P(A) = 0.3, P(B) = 0.5, and P(B|A) = 0.6. What is P(A|B)?
 
 Answer: (B)
 
-NOW GENERATE for GATE DA 2026 exam:"""
+BAD Example (DO NOT DO THIS):
+Q. Given $P(A) = 0.3$, $P(B) = 0.5$...
+
+NOW GENERATE in PLAIN TEXT (no LaTeX symbols):"""
 
     payload = {
         "model": "llama-3.3-70b-versatile",  # Latest, fastest, FREE!
@@ -211,18 +218,15 @@ def create_pdf(questions):
             pdf.set_font('helvetica', '', 10)
             pdf.set_text_color(0, 0, 0)
             
-            # FPDF2 handles Unicode - just write the question directly
-            # No encoding needed!
-            question_lines = question.split('\n')
-            for line in question_lines:
+            # Use write() instead of multi_cell - better for long lines
+            for line in question.split('\n'):
                 line = line.strip()
                 if line:
                     try:
-                        # FPDF2's multi_cell handles wrapping automatically
-                        pdf.multi_cell(0, 5, line, align='L')
+                        pdf.write(5, line)
+                        pdf.ln()
                     except Exception as e:
-                        # Log error but continue
-                        print(f"⚠️  Warning: Skipped line due to: {str(e)[:60]}")
+                        print(f"⚠️ Skipped line: {str(e)[:60]}")
             
             pdf.ln(5)
         
