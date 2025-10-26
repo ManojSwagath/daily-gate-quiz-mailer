@@ -60,7 +60,7 @@ def generate_question(subject, topic, retry_count=3):
     Returns:
         Generated question text with LaTeX formatting
     """
-    API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+    API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
     headers = {"Authorization": f"Bearer {HF_TOKEN}"}
     
     prompt = f"""Generate ONE extremely challenging DA/GATE Computer Science exam question.
@@ -156,11 +156,11 @@ class QuizPDF(FPDF):
     
     def header(self):
         """PDF Header with title and date"""
-        self.set_font('Arial', 'B', 18)
+        self.set_font('Helvetica', 'B', 18)
         self.set_text_color(255, 107, 53)  # Orange color
-        self.cell(0, 10, '🔥 Daily DA 2026 Quiz', 0, 1, 'C')
+        self.cell(0, 10, 'Daily DA 2026 Quiz', 0, 1, 'C')
         
-        self.set_font('Arial', '', 12)
+        self.set_font('Helvetica', '', 12)
         self.set_text_color(0, 0, 0)
         self.cell(0, 8, datetime.now().strftime('%B %d, %Y'), 0, 1, 'C')
         self.ln(5)
@@ -168,9 +168,9 @@ class QuizPDF(FPDF):
     def footer(self):
         """PDF Footer"""
         self.set_y(-15)
-        self.set_font('Arial', 'I', 8)
+        self.set_font('Helvetica', 'I', 8)
         self.set_text_color(128, 128, 128)
-        self.cell(0, 10, 'Generated with ❤️ by FREE AI - Good luck! 🎓', 0, 0, 'C')
+        self.cell(0, 10, 'Generated with AI - Good luck!', 0, 0, 'C')
 
 def create_pdf(questions):
     """
@@ -186,20 +186,20 @@ def create_pdf(questions):
     pdf.add_page()
     
     # Add motivational header
-    pdf.set_font('Arial', 'I', 11)
+    pdf.set_font('Helvetica', 'I', 11)
     pdf.set_text_color(100, 100, 100)
-    pdf.multi_cell(0, 6, 'Solve all questions before checking answers at the bottom! 💪', 0, 'C')
+    pdf.multi_cell(0, 6, 'Solve all questions before checking answers at the bottom!', 0, 'C')
     pdf.ln(8)
     
     # Add questions
     for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
         # Subject header
-        pdf.set_font('Arial', 'B', 13)
+        pdf.set_font('Helvetica', 'B', 13)
         pdf.set_text_color(50, 50, 150)
         pdf.cell(0, 8, f"{i}. {subject} - {topic}", 0, 1)
         
         # Question text
-        pdf.set_font('Arial', '', 10)
+        pdf.set_font('Helvetica', '', 10)
         pdf.set_text_color(0, 0, 0)
         
         # Split question by lines and handle LaTeX markers
@@ -217,12 +217,12 @@ def create_pdf(questions):
     pdf.ln(5)
     
     # Answers section
-    pdf.set_font('Arial', 'B', 14)
+    pdf.set_font('Helvetica', 'B', 14)
     pdf.set_text_color(200, 50, 50)
-    pdf.cell(0, 10, '📝 ANSWERS (Check after solving!)', 0, 1, 'C')
+    pdf.cell(0, 10, 'ANSWERS (Check after solving!)', 0, 1, 'C')
     pdf.ln(3)
     
-    pdf.set_font('Arial', '', 10)
+    pdf.set_font('Helvetica', '', 10)
     pdf.set_text_color(0, 0, 0)
     
     for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
@@ -258,28 +258,28 @@ def send_email(pdf_file, questions):
     msg = MIMEMultipart()
     msg['From'] = GMAIL_USER
     msg['To'] = GMAIL_USER
-    msg['Subject'] = f"🔥 Daily DA 2026 Quiz - {datetime.now().strftime('%b %d, %Y')}"
+    msg['Subject'] = f"Daily DA 2026 Quiz - {datetime.now().strftime('%b %d, %Y')}"
     
     # Email body
     topics_list = '\n'.join([f"  • {subj}: {topic}" for subj, (topic, _) in questions.items()])
     
-    body = f"""Hello DA 2026 Warrior! 💪
+    body = f"""Hello DA 2026 Warrior!
 
 Your daily dose of challenging questions is ready!
 
-📚 Today's High-Weightage Topics:
+Today's High-Weightage Topics:
 {topics_list}
 
-💡 Pro tips: 
+Pro tips: 
 - Attempt all questions without looking at answers first!
 - These topics are frequently asked in DA exams
 - Practice similar variations for better understanding
 
-Good luck and happy learning! 🎓
+Good luck and happy learning!
 
 ---
 Powered by FREE AI (Hugging Face + GitHub Actions)
-Keep grinding! DA 2026 is yours! 🔥
+Keep grinding! DA 2026 is yours!
 """
     
     msg.attach(MIMEText(body, 'plain'))
@@ -320,20 +320,20 @@ Keep grinding! DA 2026 is yours! 🔥
 def main():
     """Main execution function"""
     print("\n" + "="*60)
-    print("🔥 DAILY DA 2026 QUIZ GENERATOR - 100% FREE!")
+    print("DAILY DA 2026 QUIZ GENERATOR - 100% FREE!")
     print("="*60 + "\n")
     
     questions = {}
     
     # Generate questions for each subject
-    print("🤖 Generating AI-powered questions...\n")
+    print("Generating AI-powered questions...\n")
     
     for subject, topics in SYLLABUS.items():
         # Get current topic index (cycles through topics)
         topic_index = progress[subject] % len(topics)
         topic = topics[topic_index]
         
-        print(f"📚 {subject} - {topic}...")
+        print(f"[{subject}] {topic}...")
         question = generate_question(subject, topic)
         questions[subject] = (topic, question)
         
@@ -358,17 +358,17 @@ def main():
         json.dump(progress, f, indent=2)
     
     print("\n" + "="*60)
-    print("🎉 SUCCESS! Check your email!")
+    print("SUCCESS! Check your email!")
     print("="*60 + "\n")
     
     # Print summary
-    print("📊 Summary:")
-    print(f"  • Questions generated: {len(questions)}")
-    print(f"  • PDF created: {pdf_file}")
-    print(f"  • Topics covered today:")
+    print("Summary:")
+    print(f"  * Questions generated: {len(questions)}")
+    print(f"  * PDF created: {pdf_file}")
+    print(f"  * Topics covered today:")
     for subject, (topic, _) in questions.items():
         print(f"    - {subject}: {topic}")
-    print("\n💪 Keep grinding! DA 2026 is yours! 🔥\n")
+    print("\nKeep grinding! DA 2026 is yours!\n")
 
 if __name__ == "__main__":
     main()
