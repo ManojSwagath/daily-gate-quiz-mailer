@@ -63,18 +63,18 @@ def generate_question(subject, topic, retry_count=3):
     API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
     headers = {"Authorization": f"Bearer {HF_TOKEN}"}
     
-    prompt = f"""Generate ONE extremely challenging DA/GATE Computer Science exam question.
+    prompt = f"""Generate ONE extremely challenging GATE DA (Data Science & AI) exam question.
 
 Subject: {subject}
 Topic: {topic}
 
 Requirements:
-1. DA 2026 exam difficulty level (top 10% hardest questions)
+1. GATE DA 2026 exam difficulty level (top 10% hardest questions)
 2. Use LaTeX for math: $x^2$ for inline, $$equation$$ for block
 3. Four options (A, B, C, D) with ONE correct answer
-4. Include tricky reasoning that tests deep conceptual understanding
-5. Focus on frequently asked exam patterns
-6. Add numerical values or specific scenarios where applicable
+4. Include numerical calculations where applicable
+5. Test deep conceptual understanding
+6. Focus on GATE DA exam patterns
 
 Format (STRICT):
 Q. [Your challenging question here with LaTeX if needed]
@@ -86,17 +86,17 @@ Q. [Your challenging question here with LaTeX if needed]
 
 Answer: (X)
 
-Example for Dynamic Programming:
-Q. Consider the 0/1 Knapsack problem with capacity $W = 10$ and items with weights $[2, 3, 4, 5]$ and values $[3, 4, 5, 6]$. What is the maximum value achievable?
+Example for Bayes Theorem:
+Q. Given P(A) = 0.3, P(B) = 0.5, and P(B|A) = 0.6. What is P(A|B)?
 
-(A) 10
-(B) 11
-(C) 12
-(D) 13
+(A) 0.24
+(B) 0.36
+(C) 0.42
+(D) 0.48
 
-Answer: (D)
+Answer: (B)
 
-NOW GENERATE for DA 2026 exam:"""
+NOW GENERATE for GATE DA 2026 exam:"""
 
     payload = {
         "inputs": prompt,
