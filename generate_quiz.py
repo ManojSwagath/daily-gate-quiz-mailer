@@ -8,7 +8,7 @@ import os
 import json
 import requests
 from datetime import datetime
-from fpdf import FPDF
+from fpdf import FPDF  # fpdf2 package, imports as 'fpdf'
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -211,27 +211,18 @@ def create_pdf(questions):
             pdf.set_font('helvetica', '', 10)
             pdf.set_text_color(0, 0, 0)
             
-            # Clean question text - remove problematic Unicode characters
-            question_clean = question.encode('latin-1', 'ignore').decode('latin-1')
-            
-            # Split question by lines
-            question_lines = question_clean.split('\n')
+            # FPDF2 handles Unicode - just write the question directly
+            # No encoding needed!
+            question_lines = question.split('\n')
             for line in question_lines:
                 line = line.strip()
                 if line:
                     try:
-                        # Use multi_cell which auto-wraps long lines
+                        # FPDF2's multi_cell handles wrapping automatically
                         pdf.multi_cell(0, 5, line, align='L')
                     except Exception as e:
-                        # If multi_cell fails, try breaking it into smaller chunks
-                        print(f"⚠️ Line wrap issue, breaking into chunks: {str(e)[:50]}")
-                        # Break long line into 80-char chunks
-                        for i in range(0, len(line), 80):
-                            chunk = line[i:i+80]
-                            try:
-                                pdf.multi_cell(0, 5, chunk, align='L')
-                            except:
-                                continue
+                        # Log error but continue
+                        print(f"⚠️  Warning: Skipped line due to: {str(e)[:60]}")
             
             pdf.ln(5)
         
@@ -253,8 +244,7 @@ def create_pdf(questions):
         for i, (subject, (topic, question)) in enumerate(questions.items(), 1):
             # Extract answer from question text
             answer_line = "Answer not found"
-            question_clean = question.encode('latin-1', 'ignore').decode('latin-1')
-            for line in question_clean.split('\n'):
+            for line in question.split('\n'):
                 if line.strip().startswith('Answer:'):
                     answer_line = line.strip()
                     break
@@ -263,7 +253,7 @@ def create_pdf(questions):
                 pdf.cell(0, 6, f"{i}. {subject}: {answer_line}", 0, 1)
             except Exception as e:
                 print(f"⚠️ Skipped answer for {subject}: {e}")
-                pdf.cell(0, 6, f"{i}. {subject}: See PDF for answer", 0, 1)
+                pdf.cell(0, 6, f"{i}. {subject}: See questions above", 0, 1)
         
         # Save PDF
         filename = f"da_quiz_{datetime.now().strftime('%Y%m%d')}.pdf"
