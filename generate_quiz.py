@@ -33,14 +33,14 @@ except FileNotFoundError:
     print("📝 Created new progress tracker")
 
 # Get credentials from environment variables (set in GitHub Secrets)
-HF_TOKEN = os.getenv('HF_TOKEN')
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 GMAIL_USER = os.getenv('GMAIL_USER')
 GMAIL_PASS = os.getenv('GMAIL_PASS')
 FRIENDS = os.getenv('FRIENDS', '').split(',') if os.getenv('FRIENDS') else []
 
 # Validate environment variables
-if not all([HF_TOKEN, GMAIL_USER, GMAIL_PASS]):
-    raise ValueError("❌ Missing environment variables! Set HF_TOKEN, GMAIL_USER, and GMAIL_PASS")
+if not all([GROQ_API_KEY, GMAIL_USER, GMAIL_PASS]):
+    raise ValueError("❌ Missing environment variables! Set GROQ_API_KEY, GMAIL_USER, and GMAIL_PASS")
 
 print("✅ Configuration loaded successfully!")
 
@@ -50,18 +50,21 @@ print("✅ Configuration loaded successfully!")
 
 def generate_question(subject, topic, retry_count=3):
     """
-    Generate a GATE-level question using Hugging Face API (FREE!)
+    Generate a GATE-level question using Groq API (FREE & SUPER FAST!)
     
     Args:
-        subject: Subject name (e.g., "Algorithms")
-        topic: Specific topic (e.g., "Dynamic Programming")
+        subject: Subject name (e.g., "Probability & Statistics")
+        topic: Specific topic (e.g., "Bayes Theorem")
         retry_count: Number of retries if API fails
     
     Returns:
         Generated question text with LaTeX formatting
     """
-    API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
-    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+    API_URL = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
     
     prompt = f"""Generate ONE extremely challenging GATE DA (Data Science & AI) exam question.
 
@@ -99,13 +102,20 @@ Answer: (B)
 NOW GENERATE for GATE DA 2026 exam:"""
 
     payload = {
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": 400,
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "do_sample": True
-        }
+        "model": "llama-3.1-70b-versatile",  # Fast, high-quality, FREE!
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are an expert GATE DA exam question creator. Generate challenging, accurate questions with proper LaTeX formatting."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "max_tokens": 500,
+        "temperature": 0.7,
+        "top_p": 0.9
     }
     
     for attempt in range(retry_count):
@@ -114,18 +124,16 @@ NOW GENERATE for GATE DA 2026 exam:"""
             
             if response.status_code == 200:
                 result = response.json()
-                if isinstance(result, list) and len(result) > 0:
-                    generated_text = result[0]['generated_text']
-                    # Extract only the generated part (remove prompt)
-                    question = generated_text.split("NOW GENERATE:")[-1].strip()
+                if 'choices' in result and len(result['choices']) > 0:
+                    generated_text = result['choices'][0]['message']['content']
+                    # Extract only the generated part (remove any extra text)
+                    if "NOW GENERATE:" in generated_text:
+                        question = generated_text.split("NOW GENERATE:")[-1].strip()
+                    else:
+                        question = generated_text.strip()
                     return question
                 else:
                     print(f"⚠️ Unexpected API response format")
-            elif response.status_code == 503:
-                # Model is loading, wait and retry
-                print(f"⏳ Model loading... waiting 20 seconds (attempt {attempt + 1}/{retry_count})")
-                time.sleep(20)
-                continue
             else:
                 print(f"⚠️ API error: {response.status_code} - {response.text}")
         
@@ -133,7 +141,7 @@ NOW GENERATE for GATE DA 2026 exam:"""
             print(f"⚠️ Error generating question (attempt {attempt + 1}/{retry_count}): {str(e)}")
         
         if attempt < retry_count - 1:
-            time.sleep(5)  # Wait before retry
+            time.sleep(2)  # Groq is fast, shorter wait
     
     # Fallback question if API fails
     return f"""Q. In {topic}, which of the following statements is TRUE?
@@ -269,9 +277,9 @@ Your daily dose of challenging questions is ready!
 
 Today's High-Weightage Topics:
 {topics_list}
-
-Pro tips: 
-- Attempt all questions without looking at answers first!
+---
+Powered by FREE AI (Groq + GitHub Actions)
+Keep grinding! DA 2026 is yours!looking at answers first!
 - These topics are frequently asked in DA exams
 - Practice similar variations for better understanding
 

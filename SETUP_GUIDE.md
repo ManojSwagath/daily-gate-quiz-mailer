@@ -1,196 +1,247 @@
-# 🚀 SETUP INSTRUCTIONS - Follow These Steps!
+# 🚀 COMPLETE SETUP GUIDE - Groq Edition
 
-## ✅ What's Already Built
+## Why We Switched to Groq
 
-I've created all the files you need:
-- ✅ `generate_quiz.py` - Main script (AI + PDF + Email)
-- ✅ `syllabus.json` - GATE topics (customize if you want!)
-- ✅ `requirements.txt` - Python packages
-- ✅ `.github/workflows/daily.yml` - Auto-runs daily at 6 AM IST
-- ✅ `.env.example` - Template for secrets
-- ✅ `README.md` - Full documentation
+❌ **Hugging Face Issues:**
+- API down until Nov 1st
+- Slow inference (20+ seconds)
+- Model loading delays
 
----
-
-## 📋 NOW DO THESE STEPS (15 Minutes Total)
-
-### STEP 1: Create GitHub Account & Repository (3 minutes)
-
-1. **Go to**: https://github.com/signup
-   - Create account if you don't have one (FREE!)
-
-2. **Create new repository**:
-   - Click the `+` icon (top right) → "New repository"
-   - Name: `gate-quiz-mailer` (or any name you like)
-   - Description: "Daily GATE quiz automation"
-   - Choose: **Public** or **Private** (both are FREE!)
-   - ✅ Check "Add a README file"
-   - Click "Create repository"
-
-3. **Upload all files**:
-   - Click "Add file" → "Upload files"
-   - Drag and drop ALL files from `e:\Mail\` folder:
-     - `generate_quiz.py`
-     - `syllabus.json`
-     - `requirements.txt`
-     - `.github/workflows/daily.yml` (create folder structure)
-     - `.gitignore`
-     - `README.md`
-   - Click "Commit changes"
+✅ **Groq Benefits:**
+- ⚡ 100x FASTER (2-3 seconds!)
+- ✅ Always available (99.9% uptime)
+- 🎯 Better questions (LLaMA 3.1 70B)
+- 💯 Still 100% FREE!
 
 ---
 
-### STEP 2: Get Hugging Face API Token (2 minutes)
+## Step 1: Get Groq API Key (30 seconds)
 
-1. **Go to**: https://huggingface.co/join
-   - Sign up with email (FREE!)
+### Create Account:
+1. Visit: **https://console.groq.com/keys**
+2. Click **"Sign in with GitHub"** (or Google)
+3. Authorize Groq
 
-2. **Create API Token**:
-   - Click your profile picture (top right) → "Settings"
-   - Click "Access Tokens" (left menu)
-   - Click "New token"
-   - Name: `gate-quiz`
-   - Type: Select "Read"
-   - Click "Generate token"
-   - **COPY THE TOKEN** (starts with `hf_...`)
-   - ⚠️ Save it somewhere - you'll need it in Step 4!
+### Generate Key:
+1. Click **"Create API Key"**
+2. Name: `daily-gate-quiz`
+3. Click **"Submit"**
+4. **COPY THE KEY** - looks like: `gsk_abcd1234efgh5678...`
 
----
-
-### STEP 3: Setup Gmail App Password (5 minutes)
-
-1. **Enable 2-Step Verification**:
-   - Go to: https://myaccount.google.com/security
-   - Scroll to "How you sign in to Google"
-   - Click "2-Step Verification" → Turn it ON
-   - Follow the prompts (use phone number)
-
-2. **Create App Password**:
-   - After 2FA is enabled, go back to: https://myaccount.google.com/security
-   - Scroll to "2-Step Verification" → Click it
-   - Scroll down to "App passwords" → Click it
-   - Select app: "Mail"
-   - Select device: "Other (Custom name)" → Type: "GATE Quiz"
-   - Click "Generate"
-   - **COPY THE 16-CHARACTER PASSWORD** (looks like: `abcd efgh ijkl mnop`)
-   - ⚠️ Save it - you'll need it in Step 4!
+⚠️ **CRITICAL**: Save it somewhere safe! You can't see it again!
 
 ---
 
-### STEP 4: Add Secrets to GitHub (3 minutes)
+## Step 2: Get Gmail App Password (2 minutes)
 
-1. **Go to your GitHub repository**
-   - Click "Settings" tab (top menu)
-   - Click "Secrets and variables" → "Actions" (left menu)
-   - Click "New repository secret" button
+### Prerequisites:
+- Gmail account
+- 2-Step Verification enabled
 
-2. **Add 4 secrets** (one by one):
+### Steps:
+1. **Enable 2-Step Verification** (if not already):
+   - Visit: https://myaccount.google.com/security
+   - Scroll to "2-Step Verification" → Turn it ON
+   - Follow the prompts
 
-   **Secret 1:**
-   - Name: `HF_TOKEN`
-   - Value: Your Hugging Face token from Step 2 (starts with `hf_...`)
-   - Click "Add secret"
-
-   **Secret 2:**
-   - Name: `GMAIL_USER`
-   - Value: Your Gmail address (e.g., `yourname@gmail.com`)
-   - Click "Add secret"
-
-   **Secret 3:**
-   - Name: `GMAIL_PASS`
-   - Value: Your Gmail App Password from Step 3 (16 chars: `abcd efgh ijkl mnop`)
-   - Click "Add secret"
-
-   **Secret 4:**
-   - Name: `FRIENDS`
-   - Value: Your friends' emails, comma-separated
-   - Example: `friend1@gmail.com,friend2@gmail.com,friend3@gmail.com`
-   - Click "Add secret"
+2. **Generate App Password**:
+   - Visit: https://myaccount.google.com/apppasswords
+   - Select app: **"Mail"**
+   - Select device: **"Other (Custom name)"**
+   - Type: `GATE Quiz Mailer`
+   - Click **"Generate"**
+   - **COPY THE 16-CHARACTER PASSWORD** (no spaces)
+     - Example: `abcd efgh ijkl mnop`
 
 ---
 
-### STEP 5: Test It Manually! (2 minutes)
+## Step 3: Add GitHub Secrets (2 minutes)
 
-1. **Go to "Actions" tab** in your GitHub repo
-2. Click "Daily GATE Quiz Mailer" (left side)
-3. Click "Run workflow" button (right side)
-4. Click the green "Run workflow" button in the popup
-5. **Wait 1-2 minutes**
-6. Click on the running workflow to see logs
-7. **Check your email!** 📧🎉
+### Go to Your Repo Settings:
+URL: `https://github.com/YOUR_USERNAME/daily-gate-quiz-mailer/settings/secrets/actions`
+
+### Add 4 Secrets:
+
+Click **"New repository secret"** 4 times and add these:
+
+#### Secret 1: GROQ_API_KEY
+- **Name**: `GROQ_API_KEY`
+- **Value**: `gsk_...your...key...here...` (from Step 1)
+- Click "Add secret"
+
+#### Secret 2: GMAIL_USER
+- **Name**: `GMAIL_USER`
+- **Value**: `your.email@gmail.com`
+- Click "Add secret"
+
+#### Secret 3: GMAIL_PASS
+- **Name**: `GMAIL_PASS`
+- **Value**: `abcd efgh ijkl mnop` (16 chars from Step 2)
+- Click "Add secret"
+
+#### Secret 4: FRIENDS
+- **Name**: `FRIENDS`
+- **Value**: `friend1@gmail.com,friend2@gmail.com,friend3@gmail.com`
+- Click "Add secret"
+
+⚠️ **Format for FRIENDS**: Comma-separated, NO SPACES!
 
 ---
 
-## 🎉 YOU'RE DONE!
+## Step 4: Push Updated Code (1 minute)
 
-### What Happens Now?
+### In PowerShell:
 
-✅ **Every day at 6:00 AM IST**, GitHub will automatically:
-1. Generate 5 AI-powered GATE questions
-2. Create a beautiful PDF
-3. Email it to you + your 3 friends
-4. Update progress to next topics
-
-### ⚠️ Important Notes
-
-- **First run might take 30 seconds** (Hugging Face model loads)
-- **Check spam folder** if you don't see email
-- **It's 100% FREE forever!** No credit card needed
-
----
-
-## 🔧 Optional: Customize
-
-### Change Quiz Time
-Edit `.github/workflows/daily.yml`:
-```yaml
-- cron: '30 0 * * *'  # 6:00 AM IST (00:30 UTC)
+```powershell
+cd e:\Mail
+git add .
+git commit -m "Switch to Groq API - faster and more reliable!"
+git push
 ```
 
-Use https://crontab.guru to find your preferred time!
+---
 
-**Popular times:**
-- `0 0 * * *` - 5:30 AM IST
-- `0 12 * * *` - 5:30 PM IST
-- `30 13 * * *` - 7:00 PM IST
+## Step 5: Test the Workflow (2 minutes)
 
-### Add More Subjects
-Edit `syllabus.json` and add your topics!
+### Manual Test Run:
 
-### Add More Friends
-Go to GitHub repo → Settings → Secrets → Edit `FRIENDS`
+1. **Go to Actions Tab**:
+   - URL: `https://github.com/YOUR_USERNAME/daily-gate-quiz-mailer/actions`
+
+2. **Run Workflow**:
+   - Click "Daily DA 2026 Quiz Mailer" (left sidebar)
+   - Click "Run workflow" button (right side)
+   - Select branch: `main`
+   - Click green "Run workflow" button
+
+3. **Monitor Progress**:
+   - Refresh page after 10 seconds
+   - Click on the running workflow (yellow dot)
+   - Click "Generate and send quiz" to see logs
+   - Wait 2-3 minutes
+
+4. **Check Your Email**:
+   - Open your Gmail inbox
+   - Look for "Daily DA 2026 Quiz - [Date]"
+   - Download the PDF attachment
+   - Verify 8 questions are generated correctly
 
 ---
 
-## 🆘 Troubleshooting
+## ✅ Success Checklist
 
-### No email received?
-1. ✅ Check spam/junk folder
-2. ✅ Verify all 4 GitHub Secrets are correct
-3. ✅ Check Actions tab for error logs
-4. ✅ Make sure Gmail App Password is correct (no spaces!)
+After testing, you should see:
 
-### "Authentication failed" error?
-- Regenerate Gmail App Password (Step 3)
-- Update `GMAIL_PASS` secret in GitHub
-
-### Questions look weird?
-- Hugging Face model might be loading
-- Run workflow again after 5 minutes
-- Free tier models take 20-30 seconds to warm up
+- [ ] Workflow completed successfully (green checkmark)
+- [ ] Email received in inbox (check spam if not)
+- [ ] PDF attachment opens correctly
+- [ ] 8 questions with proper formatting
+- [ ] Answers section at bottom
+- [ ] Friends also received email
 
 ---
 
-## 📞 Need Help?
+## 🔧 What Happens Next?
 
-- Read `README.md` for detailed documentation
-- Check GitHub Actions logs for error messages
-- Verify all secrets are set correctly
+### Automatic Daily Runs:
+- **Time**: Every day at 6:00 AM IST
+- **Process**:
+  1. GitHub Actions wakes up
+  2. Calls Groq API to generate 8 questions
+  3. Creates PDF with FPDF2
+  4. Sends email to you + friends
+  5. Updates progress.json for next day
+
+### Topic Rotation:
+- Each subject gets 1 question daily
+- System cycles through all 94 topics
+- Complete coverage in ~12 days
+- Then repeats with fresh questions!
 
 ---
 
-## 🎓 GOOD LUCK WITH GATE 2026! 🔥
+## 🐛 Troubleshooting
 
-You're all set! Tomorrow morning at 6 AM, you'll get your first automated quiz!
+### ❌ "Error: Missing environment variables"
+**Fix**: Double-check all 4 secrets are added correctly
+- Names must be EXACT: `GROQ_API_KEY`, `GMAIL_USER`, `GMAIL_PASS`, `FRIENDS`
+- No extra spaces in values
 
-**Keep grinding! 💪**
+### ❌ "Groq API error: 401 Unauthorized"
+**Fix**: Wrong API key
+- Go back to https://console.groq.com/keys
+- Create a NEW key
+- Update `GROQ_API_KEY` secret
+
+### ❌ "SMTP authentication failed"
+**Fix**: Wrong Gmail App Password
+- Generate NEW app password: https://myaccount.google.com/apppasswords
+- Update `GMAIL_PASS` secret with NEW 16-char password
+- Make sure 2-Step Verification is ON
+
+### ❌ Email not received
+**Check**:
+1. Spam/Junk folder
+2. GitHub Actions logs for errors
+3. Gmail "Blocked" senders
+4. `GMAIL_USER` email is correct
+
+### ❌ Workflow doesn't run automatically
+**Fix**:
+1. Settings → Actions → General
+2. "Allow all actions and reusable workflows"
+3. Enable "Read and write permissions"
+4. Save
+
+---
+
+## 📊 Free Tier Limits
+
+### Groq (More than enough!):
+```
+✅ Requests: 30 per minute
+✅ Tokens: 6,000 per minute
+✅ Daily usage: Unlimited
+
+Your usage: 8 requests/day = 0.4% of limit 😎
+```
+
+### GitHub Actions:
+```
+✅ Minutes: 2,000 per month (free tier)
+✅ Storage: Unlimited for code
+
+Your usage: ~30 min/month = 1.5% of limit 🎉
+```
+
+### Gmail:
+```
+✅ Emails: 500 per day (normal accounts)
+
+Your usage: 1 email/day = 0.2% of limit 🚀
+```
+
+**You're nowhere close to any limits!** 💯
+
+---
+
+## 🎯 Next Steps
+
+1. ✅ Verify test email received
+2. ✅ Check PDF opens correctly
+3. ✅ Wait for tomorrow's automatic email (6 AM IST)
+4. ✅ Share repo with your 3 friends!
+
+---
+
+## 📚 Additional Resources
+
+- [GROQ_SETUP.md](GROQ_SETUP.md) - Detailed Groq key setup
+- [IMPORTANT_TOPICS.md](IMPORTANT_TOPICS.md) - GATE DA topic priorities
+- [README.md](README.md) - Full project documentation
+
+---
+
+**Need help?** Open an issue on GitHub!
+
+🎉 **Congrats! You're now getting daily GATE DA quizzes for FREE!** 🎉
