@@ -217,13 +217,21 @@ def create_pdf(questions):
             # Split question by lines
             question_lines = question_clean.split('\n')
             for line in question_lines:
-                if line.strip():
+                line = line.strip()
+                if line:
                     try:
-                        pdf.multi_cell(0, 5, line)
+                        # Use multi_cell which auto-wraps long lines
+                        pdf.multi_cell(0, 5, line, align='L')
                     except Exception as e:
-                        # If a line fails, skip it and log
-                        print(f"⚠️ Skipped problematic line: {e}")
-                        continue
+                        # If multi_cell fails, try breaking it into smaller chunks
+                        print(f"⚠️ Line wrap issue, breaking into chunks: {str(e)[:50]}")
+                        # Break long line into 80-char chunks
+                        for i in range(0, len(line), 80):
+                            chunk = line[i:i+80]
+                            try:
+                                pdf.multi_cell(0, 5, chunk, align='L')
+                            except:
+                                continue
             
             pdf.ln(5)
         
