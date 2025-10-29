@@ -11,6 +11,7 @@ on:
 jobs:
   send-quiz:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Prevent hanging workflows
     
     # Grant write permissions
     permissions:
@@ -31,8 +32,8 @@ jobs:
       
       - name: 📦 Install LaTeX (for PDF generation)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-extra texlive-fonts-recommended
           echo "✅ LaTeX installed successfully!"
       
       - name: 📦 Install Python Dependencies
