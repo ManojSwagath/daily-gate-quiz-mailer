@@ -78,14 +78,17 @@ Update `FRIENDS` secret with comma-separated emails (no spaces).
 ## Project Structure
 
 ```
-.
+daily-gate-quiz-mailer/
 ├── .github/
 │   └── workflows/
-│       └── daily.yml          # GitHub Actions workflow
-├── generate_quiz.py           # Main script
-├── syllabus.json              # GATE DA 2026 topics
+│       └── daily.yml           # GitHub Actions workflow (scheduled automation)
+├── generate_quiz.py            # Main quiz generation script
+├── syllabus.json              # GATE DA 2026 complete syllabus (94 topics)
+├── progress.json              # Auto-updated topic tracker
 ├── requirements.txt           # Python dependencies
-└── progress.json              # Auto-generated tracker
+├── README.md                  # Documentation
+├── LICENSE                    # MIT License
+└── .gitignore                # Git ignore rules
 ```
 
 ## GATE DA Syllabus Coverage
