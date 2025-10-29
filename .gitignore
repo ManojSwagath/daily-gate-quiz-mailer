@@ -32,6 +32,8 @@ Thumbs.db
 # Test files
 test_*.py
 *_test.py
+final_test.py
+*test*.py
 
 # Progress tracking (managed by GitHub Actions)
 # progress.json
