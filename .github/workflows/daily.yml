@@ -13,6 +13,10 @@ jobs:
   send-quiz:
     runs-on: ubuntu-latest
     
+    # Grant write permissions to push progress.json updates
+    permissions:
+      contents: write
+    
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
