@@ -1,11 +1,11 @@
 name: Daily GATE Quiz Mailer (LaTeX Edition)
 
 on:
-  schedule:
-    # Runs every day at 6:00 AM IST (00:30 UTC)
-    - cron: '30 0 * * *'
+  # DISABLED - Edit tomorrow
+  # schedule:
+  #   - cron: '30 0 * * *'
   
-  # Allows manual trigger
+  # Allows manual trigger only
   workflow_dispatch:
 
 jobs:
