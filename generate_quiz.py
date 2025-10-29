@@ -50,6 +50,122 @@ print("✅ Configuration loaded successfully!")
 # AI QUESTION GENERATION
 # ============================================================================
 
+def generate_all_questions_single_call(topic_list):
+    """
+    Generate ALL 8 questions in ONE API call - MUCH MORE EFFICIENT!
+    
+    Args:
+        topic_list: List of (subject, topic) tuples
+    
+    Returns:
+        List of (subject, topic, question_text) tuples
+    """
+    API_URL = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    # Build the comprehensive prompt for all 8 questions
+    topics_text = "\n".join([f"{i+1}. {subject}: {topic}" for i, (subject, topic) in enumerate(topic_list)])
+    
+    prompt = f"""Generate 8 challenging GATE DA (Data Science & AI) exam questions, ONE for each topic below.
+
+TOPICS:
+{topics_text}
+
+FORMATTING RULES:
+1. Write PROPER GATE exam questions with actual formulas and numbers
+2. Use MATHEMATICAL SYMBOLS (Unicode):
+   - Powers: x², x³, e⁻ᶻ (use superscripts: ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻)
+   - Roots: √, ∛, ∜
+   - Greek: α β γ δ θ λ μ σ π ω Σ Π Δ Ω
+   - Operators: × ÷ ± ∓ ≠ ≈ ≤ ≥ ∞
+   - Sets: ∈ ∉ ⊂ ⊆ ∪ ∩ ∅
+   - Logic: ∀ ∃ ∧ ∨ ¬
+3. Include NUMERICAL calculations and formulas
+4. Keep questions CONCISE but clear (like real GATE papers)
+5. GATE DA 2026 difficulty level
+
+Format for EACH question:
+=== QUESTION [NUMBER] ===
+Q. [Question with actual numbers and formulas using symbols]
+
+(A) [Option with numbers]
+(B) [Option with numbers]
+(C) [Option with numbers]
+(D) [Option with numbers]
+
+Answer: (X)
+
+Generate ALL 8 questions now:"""
+
+    payload = {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a GATE DA exam question creator. Write CONCISE questions with actual numbers and formulas. Use MATHEMATICAL SYMBOLS: x², λ, σ, √, ≤, ≥, ∈, ∞, α, β, θ, μ, π, Σ. Keep questions short and precise like real GATE papers."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "max_tokens": 4000,
+        "temperature": 0.7,
+        "top_p": 0.9
+    }
+    
+    try:
+        print("🤖 Making ONE API call for all 8 questions...")
+        response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
+        
+        if response.status_code == 200:
+            result = response.json()
+            if 'choices' in result and len(result['choices']) > 0:
+                generated_text = result['choices'][0]['message']['content']
+                
+                # Parse the generated questions
+                questions = []
+                question_blocks = generated_text.split("=== QUESTION")
+                
+                for i, (subject, topic) in enumerate(topic_list):
+                    # Try to find the corresponding question block
+                    question_text = None
+                    for block in question_blocks:
+                        if f"{i+1}" in block[:10]:  # Check if this is question i+1
+                            # Extract everything after the === line
+                            lines = block.split("\n", 1)
+                            if len(lines) > 1:
+                                question_text = lines[1].strip()
+                                break
+                    
+                    # Fallback if parsing fails
+                    if not question_text:
+                        question_text = f"""Q. In {topic}, which of the following is TRUE?
+
+(A) Option A
+(B) Option B
+(C) Option C
+(D) Option D
+
+Answer: (A)"""
+                    
+                    questions.append((subject, topic, question_text))
+                
+                print(f"✅ Generated {len(questions)} questions in ONE API call!")
+                return questions
+        
+        print(f"❌ API error: {response.status_code}")
+    
+    except Exception as e:
+        print(f"❌ Error in single API call: {str(e)}")
+    
+    # Fallback: Use old method (8 separate calls)
+    print("⚠️ Falling back to individual API calls...")
+    return [(subj, top, generate_question(subj, top)) for subj, top in topic_list]
+
 def generate_question(subject, topic, retry_count=3):
     """
     Generate a GATE-level question using Groq API (FREE & SUPER FAST!)
@@ -394,28 +510,32 @@ Keep grinding! DA 2026 is yours!
 def main():
     """Main execution function"""
     print("\n" + "="*60)
-    print("DAILY DA 2026 QUIZ GENERATOR - 100% FREE!")
+    print("DAILY DA 2026 QUIZ GENERATOR - OPTIMIZED!")
     print("="*60 + "\n")
     
-    questions = {}
+    # Collect topics for today
+    topic_list = []
     
-    # Generate questions for each subject
-    print("Generating AI-powered questions...\n")
+    print("📋 Selecting today's topics...\n")
     
     for subject, topics in SYLLABUS.items():
         # Get current topic index (cycles through topics)
         topic_index = progress[subject] % len(topics)
         topic = topics[topic_index]
-        
-        print(f"[{subject}] {topic}...")
-        question = generate_question(subject, topic)
-        questions[subject] = (topic, question)
+        topic_list.append((subject, topic))
+        print(f"  • {subject}: {topic}")
         
         # Update progress for next day
         progress[subject] = topic_index + 1
-        
-        # Small delay to avoid API rate limits
-        time.sleep(2)
+    
+    # Generate ALL questions in ONE API call - MUCH BETTER!
+    print(f"\n🚀 Generating all {len(topic_list)} questions in ONE API call...\n")
+    question_tuples = generate_all_questions_single_call(topic_list)
+    
+    # Convert to the format expected by create_pdf
+    questions = {}
+    for subject, topic, question_text in question_tuples:
+        questions[subject] = (topic, question_text)
     
     print(f"\n✅ Generated {len(questions)} questions!\n")
     
@@ -442,7 +562,8 @@ def main():
     print(f"  * Topics covered today:")
     for subject, (topic, _) in questions.items():
         print(f"    - {subject}: {topic}")
-    print("\nKeep grinding! DA 2026 is yours!\n")
+    print("\n💡 ONE API call = 8x more efficient!")
+    print("Keep grinding! DA 2026 is yours!\n")
 
 if __name__ == "__main__":
     main()
