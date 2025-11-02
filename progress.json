@@ -1,10 +1,10 @@
 {
-  "Probability and Statistics": 6,
-  "Linear Algebra": 6,
-  "Calculus and Optimization": 6,
-  "Programming and Data Structures": 6,
-  "Database Management and Warehousing": 6,
-  "Machine Learning - Supervised": 6,
-  "Machine Learning - Unsupervised": 6,
-  "Artificial Intelligence": 6
+  "Probability and Statistics": 7,
+  "Linear Algebra": 7,
+  "Calculus and Optimization": 1,
+  "Programming and Data Structures": 7,
+  "Database Management and Warehousing": 7,
+  "Machine Learning - Supervised": 7,
+  "Machine Learning - Unsupervised": 7,
+  "Artificial Intelligence": 7
 }
